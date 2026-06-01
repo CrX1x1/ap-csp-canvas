@@ -4,13 +4,12 @@ let a = 5;
 
 function preload() {
     partyConnect("wss://demoserver.p5party.org", "drawingthing");
-    shared = partyLoadShared("globals");
+    shared = partyLoadShared("globals", {allStrokes:[]});
 }
 
 function setup() {
   createCanvas(6000, 4000);
   background(220);
-  
   if (!shared.allStrokes) {
     shared.allStrokes = [];
   }

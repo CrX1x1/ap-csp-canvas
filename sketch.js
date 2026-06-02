@@ -45,9 +45,9 @@ function draw() {
   for (const o of others){
     strokeWeight(o.r/2)
     circle(o.x, o.y, o.r/2);
-    if (others.currentStroke){
+    if (o.currentStroke){
       for (let i = 0; i < o.currentStroke.length; i++){
-          seg = o.currentStroke[i]
+          let seg = o.currentStroke[i]
           strokeWeight(seg[4]);
           line(seg[0], seg[1], seg[2], seg[3]);
       }

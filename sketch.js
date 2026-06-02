@@ -1,10 +1,11 @@
-let currentStroke = [];
 let shared;
-let a = 5;
-
+let me;
+let others;
 function preload() {
     partyConnect("wss://demoserver.p5party.org", "drawingthing");
     shared = partyLoadShared("globals", {allStrokes:[]});
+    me = partyLoadMyShared({ x: 200, y: 200 , r: 10, c: "black", currentStroke:[]});
+    others = partyLoadGuestShareds()
 }
 
 function setup() {
@@ -18,7 +19,10 @@ function setup() {
 function draw() {
   background(220);
   stroke(0);
-  
+  strokeWeight(me.r/2)
+  circle(mouseX, mouseY, me.r/2);
+  me.x = mouseX
+  me.y = mouseY
   for (let i = 0; i < shared.allStrokes.length; i++) {
     let allSegments = shared.allStrokes[i];
     for (let j = 0; j < allSegments.length; j++) {
@@ -27,33 +31,45 @@ function draw() {
         line(seg[0], seg[1], seg[2], seg[3]);
     }
   }
-  
+
   if (mouseIsPressed) {
-    let vectorSegment = [pmouseX, pmouseY, mouseX, mouseY, a];
-    currentStroke.push(vectorSegment);
-    for (let j = 0; j < currentStroke.length; j++) {
-        let seg = currentStroke[j];
+    let vectorSegment = [pmouseX, pmouseY, mouseX, mouseY, me.r];
+    me.currentStroke.push(vectorSegment);
+    for (let j = 0; j < me.currentStroke.length; j++) {
+        let seg = me.currentStroke[j];
         strokeWeight(seg[4]);
         line(seg[0], seg[1], seg[2], seg[3]);
+    }
+  }
+  
+  for (const o of others){
+    strokeWeight(o.r/2)
+    circle(o.x, o.y, o.r/2);
+    if (others.currentStroke){
+      for (let i = 0; i < o.currentStroke.length; i++){
+          seg = o.currentStroke[i]
+          strokeWeight(seg[4]);
+          line(seg[0], seg[1], seg[2], seg[3]);
+      }
     }
   }
 }
 
 function mouseWheel(event) {
   if (event.delta < 0) {
-    if (a < 25) { a++; }
+    if (me.r < 25) { me.r++; }
   } else {
-    if (a > 1) { a--; }
+    if (me.r > 1) { me.r--; }
   }
   return false;
 }
 
 function mousePressed() {
-  currentStroke = []; 
+  me.currentStroke = []; 
 }
 
 function mouseReleased() {
-  if (currentStroke.length > 0) {
-    shared.allStrokes.push(currentStroke);
+  if (me.currentStroke.length > 0) {
+    shared.allStrokes.push(me.currentStroke);
   }
 }

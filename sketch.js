@@ -4,6 +4,7 @@ let others;
 let picker;
 let showPicker = false;
 let title;
+let clearButton;
 
 function preload() {
     partyConnect("wss://demoserver.p5party.org", "drawingthing");
@@ -22,10 +23,16 @@ function setup() {
     shared.allStrokes = [];
   }
 
-  picker = createColorPicker('#ff0000'); 
-  picker.position(20, 20);
+  picker = createColorPicker('#ff0000ff'); 
+  picker.position(0, 20);
   picker.style('position', 'fixed');
   picker.hide(); 
+  clearButton = createButton("Clear Canvas");
+  clearButton.position(0, 0);
+  clearButton.style("position", "fixed");
+  clearButton.mousePressed(clearCanvas)
+  clearButton.mouseOver(hover)
+  clearButton.mouseOut(noHover)
 }
 
 function draw() {
@@ -134,4 +141,14 @@ function mouseReleased() {
     shared.allStrokes.push(me.currentStroke);
   }
   me.currentStroke = [];
+}
+
+function clearCanvas() {
+  shared.allStrokes = []
+}
+function hover() {
+  clearButton.html("Are you sure?")
+}
+function noHover() {
+  clearButton.html("Clear Canvas")
 }
